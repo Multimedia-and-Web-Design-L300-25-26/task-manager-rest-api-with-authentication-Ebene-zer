@@ -30,5 +30,29 @@ const getTasks = async (req, res) => {
     }
 };
 
+//3. Delete task
+//Find task by id
+//Check ownership
+//Delete if owner
+//Otherwise return 403
+
+const deleteTask = async (req, res) => {
+    try {
+        const task = await Task.findById(req.params.id);
+        if (!task) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+        if (task.user.toString() !== req.user.id) {
+            return res.status(403).json({ message: "Can't delete this task. You are not the owner" });
+        }
+        await Task.findByIdAndDelete(req.params.id);
+        res.json({ message: "Task deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}; 
+
+export { createTask, getTasks, deleteTask };
+
 
 
