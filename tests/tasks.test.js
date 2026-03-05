@@ -8,6 +8,8 @@ let taskId;
 
 beforeAll(async () => {
   await connectDB();
+  // Ensure a clean test database
+  await mongoose.connection.db.dropDatabase();
 
   // Register
   await request(app)
