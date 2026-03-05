@@ -12,7 +12,7 @@ router.post("/", async (req, res) => {
   // - Create task
   const task = await Task.create({
     ...req.body,
-    user: req.user._id
+    owner: req.user.id
   });
   // - Return created task
   res.status(201).json(task);
@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
 // GET /api/tasks
 router.get("/", async (req, res) => {
   // - Return only tasks belonging to req.user
-  const tasks = await Task.find({ user: req.user._id });
+  const tasks = await Task.find({ owner: req.user.id });
   res.json(tasks);
 });
 
@@ -32,7 +32,7 @@ router.delete("/:id", async (req, res) => {
   if (!task) {
     return res.status(404).json({ message: "Task not found" });
   }
-  if (task.user.toString() !== req.user._id) {
+  if (task.owner.toString() !== req.user.id) {
     return res.status(403).json({ message: "Can't delete this task. You are not the owner" });
   }
   // - Delete task

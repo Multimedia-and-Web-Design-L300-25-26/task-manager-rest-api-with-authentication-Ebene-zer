@@ -10,7 +10,7 @@ const createTask = async (req, res) => {
         const task = await Task.create({
             title,
             description,
-            user: req.user.id
+            owner: req.user.id
         });
         res.status(201).json(task);
     } catch (error) {
@@ -23,7 +23,7 @@ const createTask = async (req, res) => {
 
 const getTasks = async (req, res) => {
     try {
-        const tasks = await Task.find({ user: req.user.id });   
+        const tasks = await Task.find({ owner: req.user.id });   
         res.json(tasks);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -42,7 +42,7 @@ const deleteTask = async (req, res) => {
         if (!task) {
             return res.status(404).json({ message: "Task not found" });
         }
-        if (task.user.toString() !== req.user.id) {
+        if (task.owner.toString() !== req.user.id) {
             return res.status(403).json({ message: "Can't delete this task. You are not the owner" });
         }
         await Task.findByIdAndDelete(req.params.id);
