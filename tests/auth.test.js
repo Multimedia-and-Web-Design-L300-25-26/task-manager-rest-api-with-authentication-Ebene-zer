@@ -1,5 +1,15 @@
 import request from "supertest";
 import app from "../src/app.js";
+import connectDB from "../src/config/db.js";
+import mongoose from "mongoose";
+
+beforeAll(async () => {
+  await connectDB();
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
 
 describe("Auth Routes", () => {
 
